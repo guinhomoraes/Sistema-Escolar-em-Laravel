@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Disciplina;
 use Illuminate\Http\Request;
 use App\Http\Requests\DisciplinaRequest;
+use App\Models\TipoConteudo;
 
 class DisciplinaController extends Controller
 {
@@ -96,6 +97,26 @@ class DisciplinaController extends Controller
             return redirect()->route('disciplina.index')
                              ->with('error','Não foi possível atualizar a Disciplina!!');   
         }
+    }
+
+     /**
+     * Add content
+     */
+    public function conteudos(Disciplina $id)
+    {
+        $modelDisciplina = $id;
+        $tipoConteudo = TipoConteudo::get();
+
+
+        return view('disciplina.conteudos', compact('modelDisciplina','tipoConteudo'));
+    }
+
+     /**
+     * Add content
+     */
+    public function addConteudos(Request $request)
+    {
+        return view('disciplina.conteudos');
     }
 
     /**

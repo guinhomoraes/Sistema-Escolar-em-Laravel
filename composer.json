@@ -11,6 +11,7 @@
     "require": {
         "php": "^8.2",
         "blade-ui-kit/blade-icons": "^1.8",
+        "codeat3/blade-google-material-design-icons": "^1.20",
         "codeat3/blade-mono-icons": "^1.5",
         "hasnayeen/blade-eva-icons": "^2.1",
         "laravel/framework": "^12.0",

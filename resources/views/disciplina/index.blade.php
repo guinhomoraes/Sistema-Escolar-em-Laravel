@@ -97,6 +97,7 @@
                                         <td>
                                             <a href="{{ route('disciplina.show',$disciplina->id)}}"><x-bx-detail width="30"/></a>
                                             <a href="{{ route('disciplina.edit', $disciplina->id)}}"><x-eva-edit-outline width="30" /></a>
+                                            <a href="{{ route('disciplina.conteudos', ['id' => $disciplina->id])}}"><x-gmdi-content-copy-o width="30" /></a>
                                         </td>
                                     </tr>
 

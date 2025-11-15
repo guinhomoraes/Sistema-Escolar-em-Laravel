@@ -15,4 +15,8 @@ Route::get('/dashboard', [DashBoardController::class, 'index']);
 Route::resource('/curso', CursoController::class);
 Route::resource('/tipo-conteudo', TipoConteudoController::class);
 Route::resource('/cargo', CargoController::class);
+Route::get('/disciplina/conteudos/{id}', [DisciplinaController::class,'conteudos'])
+->name('disciplina.conteudos');
+Route::post('/disciplina/add-conteudos', [DisciplinaController::class,'conteudos'])
+->name('disciplina.add-conteudos');
 Route::resource('/disciplina', DisciplinaController::class);
