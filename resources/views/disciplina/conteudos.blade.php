@@ -6,7 +6,7 @@
             <div class="col-12 d-flex justify-content-between 
                         align-items-end border-bottom border-secondary py-3">
 
-                <h3 class="my-0"> <span class="font-weight-bold"> Disciplina </span> - Cadastrar Conteúdo</h3>
+                <h3 class="my-0"> <span class="font-weight-bold"> Disciplina </span> - Gestão de Conteúdo</h3>
                 <a class="btn btn-primary" href="{{ route('disciplina.index') }}">Listar Disciplinas</a>
 
             </div>
@@ -37,6 +37,8 @@
 
                     @csrf
 
+                    <input type="hidden" name="id_disciplina" value="{{ $modelDisciplina->id }}">
+
                     <div class="col-12">
 
 
@@ -51,13 +53,19 @@
                                 <div class="col-12 card my-2">
                                     
                                     <div class="card-body row">
+
+                                        <div class="col-12 d-flex justify-content-end">
+                                            <button class="btn btn-danger btn-desfazer-remocao d-none">Desfazer Remoção</button>
+                                            <button class="btn btn-danger btn-remove-conteudo">Remover</button>
+                                        </div>
+
                                         <div class="col-7 form-group">
-                                            <label for="">Titulo</label>
+                                            <label for="">Titulo <span class="text-danger"> * </span></label>
                                             <input id="titulo" class="form-control" name="titulo[]" type="text" 
                                             value="{{ $conteudo->titulo }}" required>
                                         </div>
                                         <div class="col-5 form-group">
-                                            <label for="">Tipo de Conteúdo</label>
+                                            <label for="">Tipo de Conteúdo <span class="text-danger"> * </span></label>
                                             <select id="tipo_conteudo" class="form-control" name="tipo_conteudo[]" id="" required>
 
                                                 @foreach ($tipoConteudo as $tipo)
@@ -67,14 +75,14 @@
                                             </select>
                                         </div>
                                         <div class="col-2 form-group">
-                                            <label for="">Status</label>
+                                            <label for="">Status <span class="text-danger"> * </span></label>
                                             <select id="status" class="form-control" name="status[]" id="">
                                                 <option value="0" @selected($conteudo->status == 0) >Inativo</option>
                                                 <option value="1" @selected($conteudo->status == 1) >Ativo</option>
                                             </select>
                                         </div>
                                         <div class="col-10 form-group">
-                                            <label for="">Descrição</label>
+                                            <label for="">Descrição <span class="text-danger"> * </span></label>
                                             <input id="descricao" class="form-control" name="descricao[]" type="text"
                                             value="{{ $conteudo->descricao }}" required>
                                         </div>
@@ -82,7 +90,7 @@
                                             <label for="">Observação</label>
                                             <textarea id="observacao" class="form-control" name="observacao[]" id="" rows="2">{{ $conteudo->observacao }}</textarea>
                                         </div>
-                                        <div>
+                                        <div class="campo-id">
                                             <input type="hidden" name="id[]" value="{{ $conteudo->id }}">
                                             <input type="hidden" name="foi_excluido[]" value="0">
                                         </div>
@@ -111,12 +119,17 @@
                                     <div class="col-12 card my-2">
 
                                         <div class="card-body row">
+
+                                            <div class="col-12 d-flex justify-content-end">
+                                                <button class="btn btn-danger btn-remove-conteudo">Remover</button>
+                                            </div>
+                                            
                                             <div class="col-7 form-group">
-                                                <label for="">Titulo</label>
+                                                <label for="">Titulo <span class="text-danger"> * </span></label>
                                                 <input name="titulo[]" class="form-control" type="text">
                                             </div>
                                             <div class="col-5 form-group">
-                                                <label for="">Tipo de Conteúdo</label>
+                                                <label for="">Tipo de Conteúdo <span class="text-danger"> * </span></label>
                                                 <select id="tipo_conteudo" class="form-control" name="tipo_conteudo[]" id="" required>
 
                                                     @foreach ($tipoConteudo as $tipo)
@@ -126,19 +139,22 @@
                                                 </select>
                                             </div>
                                             <div class="col-2 form-group">
-                                                <label for="">Status</label>
+                                                <label for="">Status <span class="text-danger"> * </span></label>
                                                 <select class="form-control" name="status[]" id="">
                                                     <option value="">Ativo</option>
                                                     <option value="">Inativo</option>
                                                 </select>
                                             </div>
                                             <div class="col-10 form-group">
-                                                <label for="">Descrição</label>
+                                                <label for="">Descrição <span class="text-danger"> * </span></label>
                                                 <input class="form-control" name="descricao[]" type="text">
                                             </div>
                                             <div class="col-12 form-group">
                                                 <label for="">Observação</label>
                                                 <textarea class="form-control" name="observacao[]" id="" rows="2"></textarea>
+                                            </div>
+                                            <div class="campo-id">
+                                                <input type="hidden" name="id[]">
                                             </div>
                                         </div>
 
@@ -161,6 +177,10 @@
 
 
 
+                    </div>
+
+                    <div class="col-12 d-flex justify-content-center my-3">
+                        <button class="btn btn-primary">Atualizar Conteúdo</button>
                     </div>
 
 

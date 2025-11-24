@@ -17,6 +17,6 @@ Route::resource('/tipo-conteudo', TipoConteudoController::class);
 Route::resource('/cargo', CargoController::class);
 Route::get('/disciplina/conteudos/{id}', [DisciplinaController::class,'conteudos'])
 ->name('disciplina.conteudos');
-Route::post('/disciplina/add-conteudos', [DisciplinaController::class,'conteudos'])
+Route::post('/disciplina/add-conteudos', [DisciplinaController::class,'addConteudos'])
 ->name('disciplina.add-conteudos');
 Route::resource('/disciplina', DisciplinaController::class);

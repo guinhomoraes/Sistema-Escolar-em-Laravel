@@ -6,6 +6,8 @@ use App\Models\Disciplina;
 use Illuminate\Http\Request;
 use App\Http\Requests\DisciplinaRequest;
 use App\Models\TipoConteudo;
+use Illuminate\Support\Facades\DB;
+use App\Models\Conteudo;
 
 class DisciplinaController extends Controller
 {
@@ -116,6 +118,97 @@ class DisciplinaController extends Controller
      */
     public function addConteudos(Request $request)
     {
+
+        $dadosTituloRequest = $request->titulo;
+        $arrDadosConteudos = [];
+
+        $idDisciplina  = $request->id_disciplina;
+
+        foreach($dadosTituloRequest as $key => $tituloRequest)
+        {
+            $arrDadosConteudos[] = 
+            [
+                'id' => $request->id[$key],
+                'tipo_conteudo' => $request->tipo_conteudo[$key],
+                'titulo' => $request->titulo[$key],
+                'descricao' => $request->descricao[$key],
+                'status' => $request->status[$key],
+                'observacao' => $request->observacao[$key],
+                'foi_excluido' => isset($request->foi_excluido[$key]) 
+                                  ? $request->foi_excluido[$key] : 0 
+            ];
+        }
+
+        DB::beginTRansaction();
+
+        try
+        {
+
+            foreach($arrDadosConteudos as $key2 => $dadosRequest)
+            {
+
+                if(strlen($dadosRequest['id']) > 0)
+                {
+                    $modelConteudo = Conteudo::find($dadosRequest['id']);
+
+                    if($modelConteudo)
+                    {
+                        if($dadosRequest['foi_excluido'] == 0)
+                        {
+                            $modelConteudo->update([
+                                'id_tipo' => $dadosRequest['tipo_conteudo'],
+                                'titulo' => $dadosRequest['titulo'],
+                                'status' => $dadosRequest['status'],
+                                'descricao' => $dadosRequest['descricao'],
+                                'observacao' => $dadosRequest['observacao'],
+                                'id_disciplina' => $idDisciplina
+                            ]);
+                        }
+                        else
+                        {
+                            $modelConteudo->delete();
+                        }   
+                    }
+                }
+                else
+                {
+                    if(strlen($dadosRequest['titulo']) > 0)
+                    {
+                        $salvou = Conteudo::create([
+                            'id_tipo' => $dadosRequest['tipo_conteudo'],
+                            'titulo' => $dadosRequest['titulo'],
+                            'status' => $dadosRequest['status'],
+                            'descricao' => $dadosRequest['descricao'],
+                            'observacao' => $dadosRequest['observacao'],
+                            'id_disciplina' => $idDisciplina
+                        ]
+                        );
+
+                        if(!$salvou)
+                        {
+                            DB::rollBack();
+
+                            return redirect()->route('disciplina.index')
+                             ->with('error','Não foi possível atualizar os conteúdos!!'); 
+                        }
+                    }
+                }
+            }
+
+            DB::commit();
+
+            return redirect()->route('disciplina.index')
+                             ->with('success','Conteúdos atualizados com sucesso!!'); 
+
+        }catch(Exception $e)
+        {
+            DB::rollBack();
+
+            return redirect()->route('disciplina.index')
+                             ->with('error', $e->getMessage()); 
+        }
+
+
         return view('disciplina.conteudos');
     }
 
