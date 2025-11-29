@@ -12,6 +12,12 @@
     <!-- Page level plugins -->
     <script src="{{ asset("/vendor/chart.js/Chart.min.js") }} "></script>
 
+    <!-- DataTables -->
+    <script src="{{ asset("js/dataTables.min.js") }} "></script>
+
     <!-- Modulo de Conteudo -->
     <script src="{{ asset('js/conteudo.js') }}"></script>
+
+        <!-- Modulo de Disciplina -->
+    <script src="{{ asset('js/disciplina.js') }}"></script>
 

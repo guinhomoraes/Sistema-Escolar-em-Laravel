@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Requests\CursoRequest;
 
 use App\Models\Curso;
+use App\Models\Disciplina;
+use App\Models\CursoDisciplina;
 
 class CursoController extends Controller
 {
@@ -111,5 +113,75 @@ class CursoController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+
+      /**
+     * Add content
+     */
+    public function disciplinas(Curso $id)
+    {
+        $modelCurso = $id;
+        $disciplinas = Disciplina::get();
+        $disciplinasCadastradas = CursoDisciplina::select('id_disciplina')
+                                                   ->where('id_curso', $modelCurso->id)->get();
+
+        $arrayDisciplinas = [];
+
+        foreach($disciplinasCadastradas as $key => $disciplina)
+        {
+            $arrayDisciplinas[] = $disciplina->id_disciplina;
+        }
+
+        return view('curso.disciplinas', compact('modelCurso','disciplinas','arrayDisciplinas'));
+    }
+
+     /**
+     * Add content
+     */
+    public function addDisciplinas(Request $request)
+    {
+
+        $idCurso  = $request->id_curso;
+
+        DB::beginTRansaction();
+
+        try
+        {
+            $disciplinas = $request->disciplina;
+
+            CursoDisciplina::where('id_curso',$idCurso)->delete();
+
+            foreach($disciplinas as $key2 => $disciplina)
+            {
+
+                $salvou = CursoDisciplina::create([
+                    'id_curso' => $idCurso,
+                    'id_disciplina' => $disciplina
+                ]
+                );
+
+                if(!$salvou)
+                {
+                    DB::rollBack();
+
+                    return redirect()->route('curso.index')
+                        ->with('error','Não foi possível atualizar os disciplinas!!'); 
+                }
+
+            }
+
+            DB::commit();
+
+            return redirect()->route('curso.index')
+                             ->with('success','Disciplinas atualizadas com sucesso!!'); 
+
+        }catch(Exception $e)
+        {
+            DB::rollBack();
+
+            return redirect()->route('curso.index')
+                             ->with('error', $e->getMessage()); 
+        }
+
     }
 }

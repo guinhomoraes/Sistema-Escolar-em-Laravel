@@ -100,6 +100,7 @@
                                         <td>
                                             <a href="{{ route('curso.show',$curso->id)}}"><x-bx-detail width="30"/></a>
                                             <a href="{{ route('curso.edit', $curso->id)}}"><x-eva-edit-outline width="30" /></a>
+                                            <a href="{{ route('curso.disciplinas', ['id' => $curso->id])}}"><x-gmdi-content-copy-o width="30" /></a>
                                         </td>
                                     </tr>
 
