@@ -6,6 +6,7 @@ use App\Http\Controllers\CursoController;
 use App\Http\Controllers\TipoConteudoController;
 use App\Http\Controllers\CargoController;
 use App\Http\Controllers\DisciplinaController;
+use App\Http\Controllers\EscolaController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -27,3 +28,5 @@ Route::get('/disciplina/conteudos/{id}', [DisciplinaController::class,'conteudos
 Route::post('/disciplina/add-conteudos', [DisciplinaController::class,'addConteudos'])
 ->name('disciplina.add-conteudos');
 Route::resource('/disciplina', DisciplinaController::class);
+
+Route::resource('/escola', EscolaController::class);
