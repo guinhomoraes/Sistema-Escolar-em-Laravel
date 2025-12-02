@@ -58,7 +58,29 @@ php artisan make:model Curso -cr
 Para iniciar a aplicação deve executar o comando abaixo
 
 ```
-
 composer run dev
+```
+
+## Autenticação 
+
+Para autenticar a aplicação utilizamos o Brezee. Para adiciona-lo no projeto deve-se seguir os seguintes passos
+
+- Adicionando o pacote via composer
+
+````
+composer require laravel/breeze --dev
+````
+
+- Em seguida, execute o comando php artisan breeze:install e você verá as opções de pilha que já conhece para escolher.
 
 ```
+php artisan breeze:install
+```
+- Execute o comando abaixo para atualizar os pacoteS Node do projeto
+
+```
+npm install
+```
+
+- Agora é só iniciar a aplicação e configurar as rotas que será publicas e provadas em "route/web.php"
+
