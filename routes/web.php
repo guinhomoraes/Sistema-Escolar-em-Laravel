@@ -8,6 +8,7 @@ use App\Http\Controllers\TipoConteudoController;
 use App\Http\Controllers\CargoController;
 use App\Http\Controllers\DisciplinaController;
 use App\Http\Controllers\EscolaController;
+use App\Http\Controllers\UsuarioController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -36,6 +37,8 @@ Route::middleware('auth')->group(function () {
     Route::resource('/disciplina', DisciplinaController::class);
 
     Route::resource('/escola', EscolaController::class);
-    });
+    Route::resource('/usuario', UsuarioController::class);
+
+});
 
 require __DIR__.'/auth.php';

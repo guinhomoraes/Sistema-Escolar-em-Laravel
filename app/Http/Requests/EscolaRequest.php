@@ -9,7 +9,7 @@ class EscolaRequest extends FormRequest
     /**
      * Determine if the user is authorized to make this request.
      */
-      public function rules(): array
+    public function rules(): array
     {
         return [
             'razao_social' => 'max:200|required',
