@@ -9,6 +9,7 @@ use App\Http\Controllers\CargoController;
 use App\Http\Controllers\DisciplinaController;
 use App\Http\Controllers\EscolaController;
 use App\Http\Controllers\UsuarioController;
+use App\Http\Controllers\AdministrativoController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -38,6 +39,7 @@ Route::middleware('auth')->group(function () {
 
     Route::resource('/escola', EscolaController::class);
     Route::resource('/usuario', UsuarioController::class);
+    Route::resource('/administrativo', AdministrativoController::class);
 
 });
 
