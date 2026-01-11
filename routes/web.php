@@ -11,6 +11,7 @@ use App\Http\Controllers\EscolaController;
 use App\Http\Controllers\UsuarioController;
 use App\Http\Controllers\AdministrativoController;
 use App\Http\Controllers\ProfessorController;
+use App\Http\Controllers\TurmaController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -42,6 +43,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('/usuario', UsuarioController::class);
     Route::resource('/administrativo', AdministrativoController::class);
     Route::resource('/professor', ProfessorController::class);
+    Route::resource('/turma', TurmaController::class);
 
 });
 
