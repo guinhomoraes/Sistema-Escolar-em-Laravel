@@ -106,6 +106,8 @@
                                         <td>
                                             <a href="{{ route('turma.show',$turma->id)}}"><x-bx-detail width="30"/></a>
                                             <a href="{{ route('turma.edit', $turma->id)}}"><x-eva-edit-outline width="30" /></a>
+                                            <a href="{{ route('turma.cursos', $turma->id)}}"><x-hugeicons-course width="30" /></a>
+                                            <a href="{{ route('turma.alunos', $turma->id)}}"><x-phosphor-student-bold width="30" /></a>
                                         </td>
                                     </tr>
 

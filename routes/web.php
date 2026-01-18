@@ -43,7 +43,19 @@ Route::middleware('auth')->group(function () {
     Route::resource('/usuario', UsuarioController::class);
     Route::resource('/administrativo', AdministrativoController::class);
     Route::resource('/professor', ProfessorController::class);
+    Route::resource('/disciplina', DisciplinaController::class);
+
+    Route::get('/turma/cursos/{id}', [TurmaController::class,'cursos'])
+    ->name('turma.cursos');
+    Route::post('/turma/add-cursos', [TurmaController::class,'addCursos'])
+    ->name('turma.add-cursos');
+    Route::get('/turma/alunos/{id}', [TurmaController::class,'alunos'])
+    ->name('turma.alunos');
+    Route::post('/turma/add-alunos', [TurmaController::class,'addAlunos'])
+    ->name('turma.add-alunos');
     Route::resource('/turma', TurmaController::class);
+
+
 
 });
 

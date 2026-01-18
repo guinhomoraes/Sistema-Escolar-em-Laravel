@@ -6,7 +6,16 @@ use App\Http\Requests\TurmaRequest;
 use App\Models\Professor;
 use App\Models\Turma;
 use App\Models\Escola;
+use App\Models\Curso;
+use App\Models\TurmaCurso;
+use App\Models\User;
+use App\Models\Aluno;
+use App\Models\AlunoTurma;
+use App\Models\AlunoCurso;
+use App\Models\AlunoDisciplina;
+use App\Models\CursoDisciplina;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class TurmaController extends Controller
 {
@@ -88,9 +97,16 @@ class TurmaController extends Controller
     public function show(Turma $turma)
     {
         $modelTurma = $turma;
+        $cursosJaVinculados = DB::table('turma_curso')
+                                        ->select('curso.nome','curso.descricao')
+                                        ->join('curso','curso.id','=','turma_curso.id_curso')
+                                        ->join('turma','turma.id','=','turma_curso.id_turma')
+                                        ->where('turma.id', $modelTurma->id)
+                                        ->get();
 
         return view('turma.view',[
-            'modelTurma' => $modelTurma
+            'modelTurma' => $modelTurma,
+            'cursosJaVinculados' => $cursosJaVinculados
         ]);
     }
 
@@ -144,5 +160,235 @@ class TurmaController extends Controller
     public function destroy(Turma $turma)
     {
         //
+    }
+
+      /**
+     * Add content
+     */
+    public function cursos(Turma $id)
+    {
+        $modelTurma = $id;
+        $cursos = Curso::where('status',1)->get();
+
+        $cursosJaVinculados = TurmaCurso::where('id_turma', $modelTurma->id)->get();
+        $arrCursoAdicionados = [];
+
+        foreach($cursosJaVinculados as $key => $cursoVinc)
+        {
+            $arrCursoAdicionados[] = $cursoVinc->id_curso;   
+        }
+
+        return view('turma.cursos', compact('modelTurma','cursos','arrCursoAdicionados'));
+    }
+
+     /**
+     * Add content
+     */
+    public function addCursos(Request $request)
+    {
+
+        $cursosJaVinculados = TurmaCurso::where('id_turma', $request['id_turma'])->get();
+        $arrCursoAdicionados = [];
+
+        foreach($cursosJaVinculados as $key => $cursoVinc)
+        {
+            $arrCursoAdicionados[] = $cursoVinc->id_curso;   
+        }
+
+        $arrCursoRequest = $request['Cursos'];
+
+        DB::beginTRansaction();
+
+        try
+        {
+            foreach($arrCursoAdicionados as $key => $jaAdicionado)
+            {
+                if(!in_array($jaAdicionado, $arrCursoRequest))
+                {
+                    $cursoRemover = TurmaCurso::where('id_turma', $request['id_turma'])
+                                                ->where('id_curso', $jaAdicionado);
+
+                    if($cursoRemover)
+                    {
+                        $cursoRemover->delete();   
+                    }
+                }
+            }
+
+            foreach($arrCursoRequest as $key => $vaiSerAdicionado)
+            {
+                if(!in_array($vaiSerAdicionado, $arrCursoAdicionados))
+                {
+                    $turmaCurso = TurmaCurso::create([
+                            'id_turma' => $request['id_turma'],
+                            'id_curso' => $vaiSerAdicionado
+                    ]);
+
+                    if(!$turmaCurso)
+                    {
+                        DB::rollBack();
+                        return redirect()->route('turma.index')
+                             ->with('success','Não foi possível atualizar os Cursos!!'); 
+                    }
+                }
+            }
+
+            DB::commit();
+
+            return redirect()->route('turma.index')
+                             ->with('success','Cursos atualizados com sucesso!!'); 
+
+        }catch(Exception $e)
+        {
+            DB::rollBack();
+
+            return redirect()->route('turma.index')
+                             ->with('error', $e->getMessage()); 
+        }
+
+
+        return view('turma.cursos');
+    }
+
+
+    public function alunos(Turma $id)
+    {
+        $modelTurma = $id;
+        $alunos = User::where('status',1)->get();
+
+        $alunosJaVinculados = AlunoTurma::where('id_turma', $modelTurma->id)->get();
+        $arrAlunosAdicionados = [];
+
+        foreach($alunosJaVinculados as $key => $alunoVinc)
+        {
+            $user = Aluno::find($alunoVinc->id_aluno);
+            $arrAlunosAdicionados[] = $user->id_usuario;   
+        }
+
+        return view('turma.alunos', compact('modelTurma','alunos','arrAlunosAdicionados'));
+    }
+
+     /**
+     * Add content
+     */
+    public function addAlunos(Request $request)
+    {
+
+        $alunosJaVinculados = AlunoTurma::where('id_turma', $request['id_turma'])->get();
+        $arrAlunosAdicionados = [];
+        $modelTurma = Turma::find($request['id_turma']);
+
+        foreach($alunosJaVinculados as $key => $alunoVinc)
+        {
+            $arrAlunosAdicionados[] = $alunoVinc->id_aluno;   
+        }
+
+        $arrAlunoRequest = $request['Aluno'];
+
+        DB::beginTRansaction();
+
+        try
+        {
+
+
+
+            foreach($arrAlunoRequest as $key => $vaiSerAdicionado)
+            {
+
+                $alunoExiste = Aluno::where('id_usuario', $vaiSerAdicionado);
+
+                if(!isset($alunoExiste->id))
+                {
+
+                    $aluno = Aluno::create([
+                        'id_usuario' => $vaiSerAdicionado,
+                        'id_escola' => $modelTurma->id_escola,
+                        'registro' => 'ALUN'.$vaiSerAdicionado
+                    ]);  
+                    
+                }
+                else
+                {
+                    $aluno = $alunoExiste;   
+                }
+
+                if(!in_array($aluno->id, $arrAlunosAdicionados))
+                {
+                    $turmaAluno = AlunoTurma::create([
+                            'id_turma' => $request['id_turma'],
+                            'id_aluno' => $aluno->id
+                    ]);
+
+                    $cursos = TurmaCurso::where('id_turma',$request['id_turma'])->get();
+
+                    if(count($cursos) > 0)
+                    {
+                        foreach($cursos as $keyCurso => $curso)
+                        {
+                            $alunoCursoConsulta = AlunoCurso::where('id_aluno', $aluno->id)
+                                                              ->where('id_curso', $curso->id)
+                                                              ->get();
+
+
+                            if(count($alunoCursoConsulta) == 0) 
+                            {
+                                $cursoAluno = AlunoCurso::create([
+                                        'id_curso' => $curso->id,
+                                        'id_aluno' => $aluno->id,
+                                        'status' => 0,
+                                        'progresso' => 0
+                                ]);
+
+                                $cursoDisciplina = CursoDisciplina::where('id_curso', $curso->id)->get();
+
+                                if(count($cursoDisciplina) > 0)
+                                {
+                                    foreach($cursoDisciplina as $keyDisc => $disciplina)
+                                    {
+                                        $disciplinaAluno = AlunoDisciplina::create([
+                                                'id_aluno' => $aluno->id,
+                                                'id_disciplina' => $disciplina->id,
+                                                'status' => 0
+                                        ]);
+                                    }   
+                                }
+                            }
+                        }   
+                    }
+
+                }
+            }
+
+            foreach($arrAlunosAdicionados as $key => $jaAdicionado)
+            {
+                $alunoAdicionadoModel = Aluno::find($jaAdicionado);
+
+                if(!in_array($alunoAdicionadoModel->id_usuario, $arrAlunoRequest))
+                {
+                    $alunoRemover = AlunoTurma::where('id_turma', $request['id_turma'])
+                                                ->where('id_aluno', $jaAdicionado);
+
+                    if($alunoRemover)
+                    {
+                        $alunoRemover->delete();   
+                    }
+                }
+            }
+
+            DB::commit();
+
+            return redirect()->route('turma.index')
+                             ->with('success','Alunos atualizados com sucesso!!'); 
+
+        }catch(Exception $e)
+        {
+            DB::rollBack();
+
+            return redirect()->route('turma.index')
+                             ->with('error', $e->getMessage()); 
+        }
+
+
+        return view('turma.cursos');
     }
 }
