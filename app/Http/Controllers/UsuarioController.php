@@ -7,7 +7,12 @@ use App\Models\User;
 use App\Models\UserSearch;
 use App\Http\Requests\UserRequest;
 use App\Http\Requests\UserUpdateRequest;
+use App\Models\Aluno;
+use App\Models\AlunoCurso;
+use App\Models\AlunoDisciplina;
+use Exception;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
 
 class UsuarioController extends Controller
 {
@@ -123,5 +128,67 @@ class UsuarioController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+
+    public function cursos($id)
+    {
+        $modelAluno = Aluno::where('id_usuario', $id)->first();
+
+        $cursosAluno = $modelAluno->getCursosByAluno($modelAluno->id);
+
+        $arrayCursoAluno = [];
+
+        foreach($cursosAluno as $key => $cursoAluno)
+        {
+            $arrayCursoAluno[$cursoAluno->id]['curso'] = $cursoAluno;
+
+            $disciplinaAlunoCurso = $modelAluno
+            ->getDisciplinaByAlunoCurso($modelAluno->id, $cursoAluno->id);
+
+            foreach($disciplinaAlunoCurso as $keyD => $disciplina)
+            {
+                $arrayCursoAluno[$cursoAluno->id]['disciplinas'][] = $disciplina;
+            }
+
+        }
+
+        return view('usuario.cursos', compact('arrayCursoAluno'));
+    }
+
+    public function concluirDisciplina($id_aluno, $id_curso, $id_disciplina)
+    {
+        $alunoDisciplina = AlunoDisciplina::where('id_aluno', $id_aluno)
+                                            ->where('id_disciplina', $id_disciplina)->first();
+
+        if(!$alunoDisciplina)
+        {
+            return redirect()->back()->with('error', 'Não foi possível concluir a disciplina');
+        }
+
+        DB::beginTRansaction();
+
+        try
+        {
+            AlunoDisciplina::where('id', $alunoDisciplina->id)->update(['status' => 1]);
+
+            $cursosComDisciplina = Aluno::getCursosMesmaDisciplina($id_aluno, $id_disciplina);
+
+            foreach($cursosComDisciplina as $key => $curso)
+            {
+                $progressoCurso = Aluno::geraProgressoCurso($id_aluno, $curso->id_curso);
+                AlunoCurso::find($curso->id)->update(['progresso' => $progressoCurso]);
+            }
+
+            DB::commit();
+
+            return redirect()->back()->with('success', 'Disciplina finalizada com sucesso!');
+
+        }catch(Exception $e)
+        {
+            DB::rollBack();
+
+            return redirect()->back()->with('error', $e->getMessage());
+        }
+                                  
     }
 }

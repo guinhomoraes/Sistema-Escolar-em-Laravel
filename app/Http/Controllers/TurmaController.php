@@ -290,12 +290,10 @@ class TurmaController extends Controller
         try
         {
 
-
-
             foreach($arrAlunoRequest as $key => $vaiSerAdicionado)
             {
 
-                $alunoExiste = Aluno::where('id_usuario', $vaiSerAdicionado);
+                $alunoExiste = Aluno::where('id_usuario', $vaiSerAdicionado)->first();
 
                 if(!isset($alunoExiste->id))
                 {
@@ -326,30 +324,38 @@ class TurmaController extends Controller
                         foreach($cursos as $keyCurso => $curso)
                         {
                             $alunoCursoConsulta = AlunoCurso::where('id_aluno', $aluno->id)
-                                                              ->where('id_curso', $curso->id)
+                                                              ->where('id_curso', $curso->id_curso)
                                                               ->get();
 
 
                             if(count($alunoCursoConsulta) == 0) 
                             {
                                 $cursoAluno = AlunoCurso::create([
-                                        'id_curso' => $curso->id,
+                                        'id_curso' => $curso->id_curso,
                                         'id_aluno' => $aluno->id,
                                         'status' => 0,
                                         'progresso' => 0
                                 ]);
 
-                                $cursoDisciplina = CursoDisciplina::where('id_curso', $curso->id)->get();
+                                $cursoDisciplina = CursoDisciplina::where('id_curso', $curso->id_curso)->get();
 
                                 if(count($cursoDisciplina) > 0)
                                 {
                                     foreach($cursoDisciplina as $keyDisc => $disciplina)
                                     {
-                                        $disciplinaAluno = AlunoDisciplina::create([
-                                                'id_aluno' => $aluno->id,
-                                                'id_disciplina' => $disciplina->id,
-                                                'status' => 0
-                                        ]);
+
+                                        $alunoDisciplina = AlunoDisciplina::where('id_aluno', $aluno->id)
+                                                                            ->where('id_disciplina', $disciplina->id_disciplina)
+                                                                            ->get();
+
+                                        if(count($alunoDisciplina) == 0)
+                                        {
+                                            $disciplinaAluno = AlunoDisciplina::create([
+                                                    'id_aluno' => $aluno->id,
+                                                    'id_disciplina' => $disciplina->id_disciplina,
+                                                    'status' => 0
+                                            ]);
+                                        }
                                     }   
                                 }
                             }
@@ -357,6 +363,7 @@ class TurmaController extends Controller
                     }
 
                 }
+
             }
 
             foreach($arrAlunosAdicionados as $key => $jaAdicionado)

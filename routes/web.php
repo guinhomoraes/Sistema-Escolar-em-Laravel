@@ -40,7 +40,15 @@ Route::middleware('auth')->group(function () {
     Route::resource('/disciplina', DisciplinaController::class);
 
     Route::resource('/escola', EscolaController::class);
+
+    Route::get('/usuario/cursos/{id}', [UsuarioController::class,'cursos'])
+    ->name('usuario.cursos');
+    Route::get('/usuario/alunos/{id}', [UsuarioController::class,'alunos'])
+    ->name('usuario.alunos');
+    Route::get('/usuario/concluir/{id_aluno}/{id_curso}/{id_disciplina}', [UsuarioController::class,'concluirDisciplina'])
+    ->name('concluir-disciplina');
     Route::resource('/usuario', UsuarioController::class);
+
     Route::resource('/administrativo', AdministrativoController::class);
     Route::resource('/professor', ProfessorController::class);
     Route::resource('/disciplina', DisciplinaController::class);

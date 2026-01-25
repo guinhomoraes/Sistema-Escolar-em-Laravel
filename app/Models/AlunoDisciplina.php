@@ -8,4 +8,5 @@ class AlunoDisciplina extends Model
 {
     protected $table = "aluno_disciplina";
     protected $fillable = ['id_aluno','id_disciplina','status'];
+    protected $primaryKey = 'id';
 }
