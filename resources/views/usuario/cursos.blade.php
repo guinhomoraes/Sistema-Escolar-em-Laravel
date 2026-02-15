@@ -40,9 +40,17 @@
 
                                 <h5><b>Curso</b> : {{ $curso['curso']->nome }} </h5>
 
-                                <button type="button" class="btn btn-primary">
-                                    Progresso <span class="badge bg-secondary"> {{ $curso['curso']->progresso }}</span>
-                                </button>
+                                <div>
+
+                                    <button type="button" class="btn btn-primary">
+                                        Nota <span class="badge bg-success"> {{ $curso['curso']->nota }}</span>
+                                    </button>
+
+                                    <button type="button" class="btn btn-primary">
+                                        Progresso <span class="badge bg-secondary"> {{ $curso['curso']->progresso }}</span>
+                                    </button>
+
+                                </div>
 
                             </div>
 

@@ -98,7 +98,7 @@ class TurmaController extends Controller
     {
         $modelTurma = $turma;
         $cursosJaVinculados = DB::table('turma_curso')
-                                        ->select('curso.nome','curso.descricao')
+                                        ->select('curso.id','curso.nome','curso.descricao')
                                         ->join('curso','curso.id','=','turma_curso.id_curso')
                                         ->join('turma','turma.id','=','turma_curso.id_turma')
                                         ->where('turma.id', $modelTurma->id)
@@ -397,5 +397,27 @@ class TurmaController extends Controller
 
 
         return view('turma.cursos');
+    }
+
+    public function atualizaNota(Request $request, AlunoCurso $id)
+    {
+        $model = $id;
+
+        $alunoCurso = $model->update([
+            'nota' => $request['nota'],
+        ]);
+
+        if($alunoCurso)
+        {
+            // return redirect()->route('turma.index')
+            //                  ->with('success','Nota do aluno atualizada com sucesso!!');  
+            return redirect()->back(); 
+            
+        }
+        else
+        {
+            return redirect()->route('turma.index')
+                             ->with('error','Não foi possível atualizar a nota do Aluno!!');   
+        }
     }
 }

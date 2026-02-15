@@ -113,7 +113,6 @@
                                         <a href="{{ route('usuario.show',$usuario->id)}}"><x-bx-detail width="30"/></a>
                                         <a href="{{ route('usuario.edit', $usuario->id)}}"><x-eva-edit-outline width="30" /></a>
                                         <a href="{{ route('usuario.cursos', $usuario->id)}}"><x-hugeicons-course width="30" /></a>
-                                        <a href="{{ route('usuario.alunos', $usuario->id)}}"><x-phosphor-student-bold width="30" /></a>
                                     </td>
                                 </tr>
 

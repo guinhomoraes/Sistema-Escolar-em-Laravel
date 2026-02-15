@@ -61,6 +61,8 @@ Route::middleware('auth')->group(function () {
     ->name('turma.alunos');
     Route::post('/turma/add-alunos', [TurmaController::class,'addAlunos'])
     ->name('turma.add-alunos');
+    Route::put('/turma/atualiza-nota/{id}', [TurmaController::class,'atualizaNota'])
+    ->name('turma.atualiza-nota');
     Route::resource('/turma', TurmaController::class);
 
 

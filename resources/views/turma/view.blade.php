@@ -1,3 +1,6 @@
+<?php
+use App\Models\Curso;
+?>
 <x-layout>
 
     <div class="container-fluid">
@@ -90,40 +93,72 @@
                         <div class="row">
 
                             <div class="col-12">
-                                <h4>Cursos Vinculados</h4>
+                                <h4>Cursos Vinculados / Alunos</h4>
                             </div>
 
                             <div class="col-12 my-2">
-                                    
-                                    <div class="table-responsive">
 
-                                        <table class="table table-striped table-hover">
+                                @foreach ($cursosJaVinculados as $curso)
 
-                                            <thead>
+                                    <div class="card my-2">
 
-                                                <tr>
-                                                    <th>Nome</th>
-                                                    <th>Descrição</th>
-                                                </tr>
+                                        <div class="card-body">
 
-                                            </thead>
+                                            <h5 class="my-2"><b>{{ $curso->nome}} - {{ $curso->descricao}}</b></h5>
 
-                                            <tbody>
+                                            <?php $alunos = Curso::getAlunosByCurso($curso->id,$modelTurma->id); ?>
+                                                
+                                            <div class="table-responsive my-2">
 
-                                                @foreach ($cursosJaVinculados as $curso)
+                                                <table class="table table-striped table-hover">
 
-                                                    <tr>
-                                                        <td>{{ $curso->nome}}</td>
-                                                        <td>{{ $curso->descricao}}</td>
-                                                    </tr>
+                                                    <thead>
 
-                                                @endforeach
+                                                        <tr>
+                                                            <th>Aluno</th>
+                                                            <th>Nota</th>                                                    
+                                                        </tr>
 
-                                            </tbody>
+                                                    </thead>
 
-                                        </table>
+                                                    <tbody>
+
+                                                        @foreach ($alunos as $aluno)
+
+                                                            <tr>
+                                                                <td>{{ $aluno->name}}</td>
+                                                                <td>
+                                                                    @if (Curso::podeEditarCurso($modelTurma->id))
+                                                                    
+                                                                        <form class="form-inline" action="{{ route('turma.atualiza-nota', ['id' => $aluno->id]) }}" method="post">
+
+                                                                            @csrf
+                                                                            @method('put')
+
+                                                                            <input type="number" class="form-control" name="nota" value="{{ $aluno->nota }}">
+                                                                            <button class="btn btn-primary ml-2">Atualizar</button>
+                                                                        
+                                                                        </form>
+
+                                                                    @else
+                                                                        {{strlen($aluno->nota) > 0 ? $aluno->nota : "Não Atribuído"}}
+                                                                    @endif
+                                                                </td>
+                                                            </tr>
+
+                                                        @endforeach
+
+                                                    </tbody>
+
+                                                </table>
+
+                                            </div>
+
+                                        </div>
 
                                     </div>
+
+                                @endforeach
 
                             </div>
                         
