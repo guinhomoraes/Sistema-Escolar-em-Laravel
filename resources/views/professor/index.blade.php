@@ -37,7 +37,7 @@
                                 <option value="">-</option>
                                 @foreach($usuarios as $user)
                                     <option value="{{$user->id}}" 
-                                            @selected( strlen(request()->query("id_usuario")) == $user->id)>{{ $user->name}}</option>
+                                            @selected( request()->query("id_usuario")  == $user->id)>{{ $user->name}}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -52,7 +52,7 @@
                                 <option value="">-</option>
                                 @foreach($escolas as $escola)
                                     <option value="{{$escola->id}}" 
-                                            @selected( strlen(request()->query("id_escola")) == $escola->id)>{{ $escola->razao_social}}</option>
+                                            @selected( request()->query("id_escola") == $escola->id)>{{ $escola->razao_social}}</option>
                                 @endforeach
                             </select>
                         </div>

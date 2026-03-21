@@ -7,6 +7,7 @@ use App\Models\Escola;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Requests\ProfessorRequest;
+use App\Models\Search\ProfessorSeach;
 
 class ProfessorController extends Controller
 {
@@ -15,21 +16,12 @@ class ProfessorController extends Controller
      */
     public function index(Request $request)
     {
-        $id_usuario = !empty($request->query("id_usuario")) ? $request->query('id_usuario') : null;
-        $id_escola = !empty($request->query("id_escola")) ? $request->query('id_escola') : null;
-
+        
         $escolas = Escola::get();
         $usuarios = User::get();
 
-        $professores = Professor::query()
-                        ->when(!empty($id_usuario), function($query, $id_usuario){
-                            return $query->where('id_usuario',$id_usuario);
-                        })
-                        ->when(!empty($id_escola), function($query, $id_escola){
-                            return $query->where('id_escola',$id_escola);
-                        })
-                        ->paginate(6);
-
+        $modelSearchProfessor = new ProfessorSeach();
+        $professores = $modelSearchProfessor->search($request);
 
         return view('professor.index',[
             'professores' => $professores,
