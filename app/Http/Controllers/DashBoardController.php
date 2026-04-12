@@ -7,6 +7,7 @@ use App\Models\Curso;
 use App\Models\Professor;
 use App\Models\Turma;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class DashBoardController extends Controller
 {
@@ -15,6 +16,8 @@ class DashBoardController extends Controller
      */
     public function index()
     {
+        Log::critical("log critico");
+
         $contadorEscola = Escola::count();
         $contadorCurso = Curso::count();
         $contadorTurma = Turma::count();
