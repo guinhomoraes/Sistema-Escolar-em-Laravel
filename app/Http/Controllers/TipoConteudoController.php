@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\TipoConteudoRequest;
 use App\Models\TipoConteudo;
 use Illuminate\Http\Request;
-use App\Http\Requests\TipoConteudoRequest;
 
 class TipoConteudoController extends Controller
 {
@@ -14,11 +14,11 @@ class TipoConteudoController extends Controller
     public function index(Request $request)
     {
         $tipo = $request->query('tipo');
-        $status = strlen($request->query('status')) > 0 ? [$request->query('status')] : [0,1];
+        $status = strlen($request->query('status')) > 0 ? [$request->query('status')] : [0, 1];
 
-        $tipos = TipoConteudo::where('tipo','LIKE','%'.$tipo.'%')
-                              ->whereIn('status',$status)
-                              ->paginate(6);
+        $tipos = TipoConteudo::where('tipo', 'LIKE', '%'.$tipo.'%')
+            ->whereIn('status', $status)
+            ->paginate(6);
 
         return view('tipo-conteudo.index', compact('tipos'));
     }
@@ -38,18 +38,15 @@ class TipoConteudoController extends Controller
     {
         $tipo_conteudo = TipoConteudo::create([
             'tipo' => $request['tipo'],
-            'status' => $request['status']
+            'status' => $request['status'],
         ]);
 
-        if($tipo_conteudo)
-        {
+        if ($tipo_conteudo) {
             return redirect()->route('tipo-conteudo.index')
-                             ->with('success','Tipo de Conteúdo cadastrado com sucesso!!');   
-        }
-        else
-        {
+                ->with('success', 'Tipo de Conteúdo cadastrado com sucesso!!');
+        } else {
             return redirect()->route('tipo-conteudo.index')
-                             ->with('error','Não foi possível cadastrar o Tipo de Conteúdo!!');   
+                ->with('error', 'Não foi possível cadastrar o Tipo de Conteúdo!!');
         }
     }
 
@@ -59,7 +56,7 @@ class TipoConteudoController extends Controller
     public function show(TipoConteudo $tipoConteudo)
     {
         return view('tipo-conteudo.view', [
-          'modelTipoConteudo' => $tipoConteudo 
+            'modelTipoConteudo' => $tipoConteudo,
         ]);
     }
 
@@ -69,7 +66,7 @@ class TipoConteudoController extends Controller
     public function edit(TipoConteudo $tipo_conteudo)
     {
         return view('tipo-conteudo.update', [
-          'modelTipoConteudo' => $tipo_conteudo 
+            'modelTipoConteudo' => $tipo_conteudo,
         ]);
     }
 
@@ -78,20 +75,17 @@ class TipoConteudoController extends Controller
      */
     public function update(TipoConteudoRequest $request, TipoConteudo $tipoConteudo)
     {
-         $tipo_conteudo = $tipoConteudo->update([
+        $tipo_conteudo = $tipoConteudo->update([
             'tipo' => $request['tipo'],
-            'status' => $request['status']
+            'status' => $request['status'],
         ]);
 
-        if($tipo_conteudo)
-        {
+        if ($tipo_conteudo) {
             return redirect()->route('tipo-conteudo.index')
-                             ->with('success','Tipo de Conteúdo atualizado com sucesso!!');   
-        }
-        else
-        {
+                ->with('success', 'Tipo de Conteúdo atualizado com sucesso!!');
+        } else {
             return redirect()->route('tipo-conteudo.index')
-                             ->with('error','Não foi possível atualizar o Tipo de Conteúdo!!');   
+                ->with('error', 'Não foi possível atualizar o Tipo de Conteúdo!!');
         }
     }
 

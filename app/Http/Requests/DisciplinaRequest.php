@@ -13,17 +13,17 @@ class DisciplinaRequest extends FormRequest
     {
         return [
             'nome' => 'required|max:150',
-            'descricao' => 'required|max:200'
+            'descricao' => 'required|max:200',
         ];
     }
 
-    public function messages() : array
+    public function messages(): array
     {
         return [
-            'nome.required' => "O campo nome é obrigatório",
-            'nome.max' => "O tamanho máximo do campo nome é de :max caracteres",
-            'descricao.required' => "O campo descrição é obrigatório",
-            'descricao.max' => "O tamanho máximo do campo descricao é de :max caracteres",
+            'nome.required' => 'O campo nome é obrigatório',
+            'nome.max' => 'O tamanho máximo do campo nome é de :max caracteres',
+            'descricao.required' => 'O campo descrição é obrigatório',
+            'descricao.max' => 'O tamanho máximo do campo descricao é de :max caracteres',
         ];
     }
 }

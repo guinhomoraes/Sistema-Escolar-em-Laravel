@@ -2,13 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CursoRequest;
+use App\Models\Curso;
+use App\Models\CursoDisciplina;
+use App\Models\Disciplina;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use App\Http\Requests\CursoRequest;
-
-use App\Models\Curso;
-use App\Models\Disciplina;
-use App\Models\CursoDisciplina;
 
 class CursoController extends Controller
 {
@@ -17,18 +16,17 @@ class CursoController extends Controller
      */
     public function index(Request $request)
     {
-        $nome = !empty($request->query("nome")) ? $request->query('nome') : '';
-        $descricao = !empty($request->query("descricao")) ? $request->query('descricao') : '';
-        $status = strlen($request->query("status")) > 0 ? [$request->query("status")] : [0,1];
+        $nome = ! empty($request->query('nome')) ? $request->query('nome') : '';
+        $descricao = ! empty($request->query('descricao')) ? $request->query('descricao') : '';
+        $status = strlen($request->query('status')) > 0 ? [$request->query('status')] : [0, 1];
 
-        $cursos = Curso::where('nome','LIKE','%'.$nome.'%')
-                         ->where('descricao','LIKE','%'.$descricao.'%')
-                         ->whereIn('status', $status)
-                         ->paginate(6);
+        $cursos = Curso::where('nome', 'LIKE', '%'.$nome.'%')
+            ->where('descricao', 'LIKE', '%'.$descricao.'%')
+            ->whereIn('status', $status)
+            ->paginate(6);
 
-
-        return view('curso.index',[
-            'cursos' => $cursos
+        return view('curso.index', [
+            'cursos' => $cursos,
         ]);
     }
 
@@ -45,22 +43,19 @@ class CursoController extends Controller
      */
     public function store(CursoRequest $request)
     {
-       $cursoCadastrado = Curso::create([
-                                'nome' => $request['nome'],
-                                'descricao' => $request['descricao'],
-                                'status' => $request['status'],
-                                'preco' => $request['preco'],
-                                'observacao' => $request['observacao'],
-                                'dt_cadastro' => date('Y-m-d')
-                            ]);
+        $cursoCadastrado = Curso::create([
+            'nome' => $request['nome'],
+            'descricao' => $request['descricao'],
+            'status' => $request['status'],
+            'preco' => $request['preco'],
+            'observacao' => $request['observacao'],
+            'dt_cadastro' => date('Y-m-d'),
+        ]);
 
-        if($cursoCadastrado)
-        {
-            return redirect()->route('curso.index')->with('success','Curso cadastrado com sucesso!!');
-        }
-        else
-        {
-            return redirect()->route('curso.create')->with('error','Não foi possível cadastrar o curso!!');
+        if ($cursoCadastrado) {
+            return redirect()->route('curso.index')->with('success', 'Curso cadastrado com sucesso!!');
+        } else {
+            return redirect()->route('curso.create')->with('error', 'Não foi possível cadastrar o curso!!');
         }
     }
 
@@ -70,7 +65,7 @@ class CursoController extends Controller
     public function show(string $id)
     {
         $modelCurso = Curso::find($id);
-        
+
         return view('curso.view', compact('modelCurso'));
     }
 
@@ -80,7 +75,7 @@ class CursoController extends Controller
     public function edit(string $id)
     {
         $modelCurso = Curso::find($id);
-        
+
         return view('curso.update', compact('modelCurso'));
     }
 
@@ -90,20 +85,17 @@ class CursoController extends Controller
     public function update(CursoRequest $request, Curso $curso)
     {
         $cursoAtualizado = $curso->update([
-                                'nome' => $request['nome'],
-                                'descricao' => $request['descricao'],
-                                'status' => $request['status'],
-                                'preco' => $request['preco'],
-                                'observacao' => $request['observacao']
-                            ]);
+            'nome' => $request['nome'],
+            'descricao' => $request['descricao'],
+            'status' => $request['status'],
+            'preco' => $request['preco'],
+            'observacao' => $request['observacao'],
+        ]);
 
-        if($cursoAtualizado)
-        {
-            return redirect()->route('curso.index')->with('success','Curso atualizado com sucesso!!');
-        }
-        else
-        {
-            return redirect()->route('curso.index')->with('error','Não foi possível atualizar o curso!!');
+        if ($cursoAtualizado) {
+            return redirect()->route('curso.index')->with('success', 'Curso atualizado com sucesso!!');
+        } else {
+            return redirect()->route('curso.index')->with('error', 'Não foi possível atualizar o curso!!');
         }
     }
 
@@ -115,7 +107,7 @@ class CursoController extends Controller
         //
     }
 
-      /**
+    /**
      * Add content
      */
     public function disciplinas(Curso $id)
@@ -123,49 +115,45 @@ class CursoController extends Controller
         $modelCurso = $id;
         $disciplinas = Disciplina::get();
         $disciplinasCadastradas = CursoDisciplina::select('id_disciplina')
-                                                   ->where('id_curso', $modelCurso->id)->get();
+            ->where('id_curso', $modelCurso->id)->get();
 
         $arrayDisciplinas = [];
 
-        foreach($disciplinasCadastradas as $key => $disciplina)
-        {
+        foreach ($disciplinasCadastradas as $key => $disciplina) {
             $arrayDisciplinas[] = $disciplina->id_disciplina;
         }
 
-        return view('curso.disciplinas', compact('modelCurso','disciplinas','arrayDisciplinas'));
+        return view('curso.disciplinas', compact('modelCurso', 'disciplinas', 'arrayDisciplinas'));
     }
 
-     /**
+    /**
      * Add content
      */
     public function addDisciplinas(Request $request)
     {
 
-        $idCurso  = $request->id_curso;
+        $idCurso = $request->id_curso;
 
         DB::beginTRansaction();
 
-        try
-        {
+        try {
             $disciplinas = $request->disciplina;
 
-            CursoDisciplina::where('id_curso',$idCurso)->delete();
+            CursoDisciplina::where('id_curso', $idCurso)->delete();
 
-            foreach($disciplinas as $key2 => $disciplina)
-            {
+            foreach ($disciplinas as $key2 => $disciplina) {
 
                 $salvou = CursoDisciplina::create([
                     'id_curso' => $idCurso,
-                    'id_disciplina' => $disciplina
+                    'id_disciplina' => $disciplina,
                 ]
                 );
 
-                if(!$salvou)
-                {
+                if (! $salvou) {
                     DB::rollBack();
 
                     return redirect()->route('curso.index')
-                        ->with('error','Não foi possível atualizar os disciplinas!!'); 
+                        ->with('error', 'Não foi possível atualizar os disciplinas!!');
                 }
 
             }
@@ -173,14 +161,13 @@ class CursoController extends Controller
             DB::commit();
 
             return redirect()->route('curso.index')
-                             ->with('success','Disciplinas atualizadas com sucesso!!'); 
+                ->with('success', 'Disciplinas atualizadas com sucesso!!');
 
-        }catch(Exception $e)
-        {
+        } catch (Exception $e) {
             DB::rollBack();
 
             return redirect()->route('curso.index')
-                             ->with('error', $e->getMessage()); 
+                ->with('error', $e->getMessage());
         }
 
     }

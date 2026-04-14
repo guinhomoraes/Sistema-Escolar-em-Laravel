@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Escola;
 use App\Models\Curso;
+use App\Models\Escola;
 use App\Models\Professor;
 use App\Models\Turma;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
 class DashBoardController extends Controller
@@ -16,14 +15,14 @@ class DashBoardController extends Controller
      */
     public function index()
     {
-        Log::critical("log critico");
+        Log::critical('log critico');
 
         $contadorEscola = Escola::count();
         $contadorCurso = Curso::count();
         $contadorTurma = Turma::count();
         $contadorProfessor = Professor::count();
 
-        return view('dashboard.index', compact('contadorEscola','contadorCurso','contadorTurma',
-        'contadorProfessor'));
+        return view('dashboard.index', compact('contadorEscola', 'contadorCurso', 'contadorTurma',
+            'contadorProfessor'));
     }
 }

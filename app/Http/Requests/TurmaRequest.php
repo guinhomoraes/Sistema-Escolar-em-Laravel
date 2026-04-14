@@ -6,7 +6,7 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class TurmaRequest extends FormRequest
 {
-   public function rules(): array
+    public function rules(): array
     {
         return [
             'nome' => 'required',
@@ -15,12 +15,12 @@ class TurmaRequest extends FormRequest
         ];
     }
 
-    public function messages() : array
+    public function messages(): array
     {
         return [
-            'nome.required' => "O campo Nome é obrigatório",
-            'descricao.required' => "O campo Descrição é obrigatório",
-            'id_escola.required' => "O campo Escola é obrigatório",
+            'nome.required' => 'O campo Nome é obrigatório',
+            'descricao.required' => 'O campo Descrição é obrigatório',
+            'id_escola.required' => 'O campo Escola é obrigatório',
         ];
     }
 }

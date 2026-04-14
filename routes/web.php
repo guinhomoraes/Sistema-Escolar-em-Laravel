@@ -1,17 +1,17 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\DashBoardController;
-use App\Http\Controllers\CursoController;
-use App\Http\Controllers\TipoConteudoController;
+use App\Http\Controllers\AdministrativoController;
 use App\Http\Controllers\CargoController;
+use App\Http\Controllers\CursoController;
+use App\Http\Controllers\DashBoardController;
 use App\Http\Controllers\DisciplinaController;
 use App\Http\Controllers\EscolaController;
-use App\Http\Controllers\UsuarioController;
-use App\Http\Controllers\AdministrativoController;
 use App\Http\Controllers\ProfessorController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\TipoConteudoController;
 use App\Http\Controllers\TurmaController;
+use App\Http\Controllers\UsuarioController;
+use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
@@ -24,48 +24,46 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/dashboard', [DashBoardController::class, 'index'])->name('dashboard');
 
-    Route::get('/curso/disciplinas/{id}', [CursoController::class,'disciplinas'])
-    ->name('curso.disciplinas');
-    Route::post('/curso/add-diciplinas', [CursoController::class,'addDisciplinas'])
-    ->name('curso.add-disciplinas');
+    Route::get('/curso/disciplinas/{id}', [CursoController::class, 'disciplinas'])
+        ->name('curso.disciplinas');
+    Route::post('/curso/add-diciplinas', [CursoController::class, 'addDisciplinas'])
+        ->name('curso.add-disciplinas');
     Route::resource('/curso', CursoController::class);
 
     Route::resource('/tipo-conteudo', TipoConteudoController::class);
     Route::resource('/cargo', CargoController::class);
 
-    Route::get('/disciplina/conteudos/{id}', [DisciplinaController::class,'conteudos'])
-    ->name('disciplina.conteudos');
-    Route::post('/disciplina/add-conteudos', [DisciplinaController::class,'addConteudos'])
-    ->name('disciplina.add-conteudos');
+    Route::get('/disciplina/conteudos/{id}', [DisciplinaController::class, 'conteudos'])
+        ->name('disciplina.conteudos');
+    Route::post('/disciplina/add-conteudos', [DisciplinaController::class, 'addConteudos'])
+        ->name('disciplina.add-conteudos');
     Route::resource('/disciplina', DisciplinaController::class);
 
     Route::resource('/escola', EscolaController::class);
 
-    Route::get('/usuario/cursos/{id}', [UsuarioController::class,'cursos'])
-    ->name('usuario.cursos');
-    Route::get('/usuario/alunos/{id}', [UsuarioController::class,'alunos'])
-    ->name('usuario.alunos');
-    Route::get('/usuario/concluir/{id_aluno}/{id_curso}/{id_disciplina}', [UsuarioController::class,'concluirDisciplina'])
-    ->name('concluir-disciplina');
+    Route::get('/usuario/cursos/{id}', [UsuarioController::class, 'cursos'])
+        ->name('usuario.cursos');
+    Route::get('/usuario/alunos/{id}', [UsuarioController::class, 'alunos'])
+        ->name('usuario.alunos');
+    Route::get('/usuario/concluir/{id_aluno}/{id_curso}/{id_disciplina}', [UsuarioController::class, 'concluirDisciplina'])
+        ->name('concluir-disciplina');
     Route::resource('/usuario', UsuarioController::class);
 
     Route::resource('/administrativo', AdministrativoController::class);
     Route::resource('/professor', ProfessorController::class);
     Route::resource('/disciplina', DisciplinaController::class);
 
-    Route::get('/turma/cursos/{id}', [TurmaController::class,'cursos'])
-    ->name('turma.cursos');
-    Route::post('/turma/add-cursos', [TurmaController::class,'addCursos'])
-    ->name('turma.add-cursos');
-    Route::get('/turma/alunos/{id}', [TurmaController::class,'alunos'])
-    ->name('turma.alunos');
-    Route::post('/turma/add-alunos', [TurmaController::class,'addAlunos'])
-    ->name('turma.add-alunos');
-    Route::put('/turma/atualiza-nota/{id}', [TurmaController::class,'atualizaNota'])
-    ->name('turma.atualiza-nota');
+    Route::get('/turma/cursos/{id}', [TurmaController::class, 'cursos'])
+        ->name('turma.cursos');
+    Route::post('/turma/add-cursos', [TurmaController::class, 'addCursos'])
+        ->name('turma.add-cursos');
+    Route::get('/turma/alunos/{id}', [TurmaController::class, 'alunos'])
+        ->name('turma.alunos');
+    Route::post('/turma/add-alunos', [TurmaController::class, 'addAlunos'])
+        ->name('turma.add-alunos');
+    Route::put('/turma/atualiza-nota/{id}', [TurmaController::class, 'atualizaNota'])
+        ->name('turma.atualiza-nota');
     Route::resource('/turma', TurmaController::class);
-
-
 
 });
 

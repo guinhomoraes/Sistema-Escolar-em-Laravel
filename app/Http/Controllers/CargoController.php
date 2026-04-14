@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CargoRequest;
 use App\Models\Cargo;
 use Illuminate\Http\Request;
-use App\Http\Requests\CargoRequest;
 
 class CargoController extends Controller
 {
@@ -15,12 +15,12 @@ class CargoController extends Controller
     {
         $titulo = $request->query('titulo');
         $descricao = $request->query('descricao');
-        $status = strlen($request->query('status')) > 0 ? [$request->query('status')] : [0,1];
+        $status = strlen($request->query('status')) > 0 ? [$request->query('status')] : [0, 1];
 
-        $cargos = Cargo::where('titulo','LIKE','%'.$titulo.'%')
-                              ->where('descricao','LIKE','%'.$descricao.'%')
-                              ->whereIn('status',$status)
-                              ->paginate(6);
+        $cargos = Cargo::where('titulo', 'LIKE', '%'.$titulo.'%')
+            ->where('descricao', 'LIKE', '%'.$descricao.'%')
+            ->whereIn('status', $status)
+            ->paginate(6);
 
         return view('cargo.index', compact('cargos'));
     }
@@ -41,18 +41,15 @@ class CargoController extends Controller
         $cargo = Cargo::create([
             'titulo' => $request['titulo'],
             'descricao' => $request['descricao'],
-            'status' => $request['status']
+            'status' => $request['status'],
         ]);
 
-        if($cargo)
-        {
+        if ($cargo) {
             return redirect()->route('cargo.index')
-                             ->with('success','Cargo cadastrado com sucesso!!');   
-        }
-        else
-        {
+                ->with('success', 'Cargo cadastrado com sucesso!!');
+        } else {
             return redirect()->route('cargo.index')
-                             ->with('error','Não foi possível cadastrar o Cargo!!');   
+                ->with('error', 'Não foi possível cadastrar o Cargo!!');
         }
     }
 
@@ -61,8 +58,8 @@ class CargoController extends Controller
      */
     public function show(Cargo $cargo)
     {
-         return view('cargo.view', [
-          'modelCargo' => $cargo 
+        return view('cargo.view', [
+            'modelCargo' => $cargo,
         ]);
     }
 
@@ -72,7 +69,7 @@ class CargoController extends Controller
     public function edit(Cargo $cargo)
     {
         return view('cargo.update', [
-          'modelCargo' => $cargo 
+            'modelCargo' => $cargo,
         ]);
     }
 
@@ -84,18 +81,15 @@ class CargoController extends Controller
         $cargo = $cargo->update([
             'titulo' => $request['titulo'],
             'descricao' => $request['descricao'],
-            'status' => $request['status']
+            'status' => $request['status'],
         ]);
 
-        if($cargo)
-        {
+        if ($cargo) {
             return redirect()->route('cargo.index')
-                             ->with('success','Cargo atualizado com sucesso!!');   
-        }
-        else
-        {
+                ->with('success', 'Cargo atualizado com sucesso!!');
+        } else {
             return redirect()->route('cargo.index')
-                             ->with('error','Não foi possível atualizar o Cargo!!');   
+                ->with('error', 'Não foi possível atualizar o Cargo!!');
         }
     }
 

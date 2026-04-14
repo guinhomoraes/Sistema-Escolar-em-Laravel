@@ -13,16 +13,16 @@ class CargoRequest extends FormRequest
     {
         return [
             'titulo' => 'required|max:100',
-            'descricao' => 'required'
+            'descricao' => 'required',
         ];
     }
 
-    public function messages() : array
+    public function messages(): array
     {
         return [
-            'titulo.required' => "O campo titulo é obrigatório",
-            'titulo.max' => "O tamanho máximo do campo é de :max caracteres",
-            'descricao.required' => "O campo descrição é obrigatório"
+            'titulo.required' => 'O campo titulo é obrigatório',
+            'titulo.max' => 'O tamanho máximo do campo é de :max caracteres',
+            'descricao.required' => 'O campo descrição é obrigatório',
         ];
     }
 }

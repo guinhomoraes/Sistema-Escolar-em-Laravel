@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class TipoConteudoRequest extends FormRequest
@@ -17,20 +18,20 @@ class TipoConteudoRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * @return array<string, ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
         return [
-            'tipo' => 'required|max:100'
+            'tipo' => 'required|max:100',
         ];
     }
 
-    public function messages() : array
+    public function messages(): array
     {
         return [
-            'tipo.required' => "O campo tipo é obrigatório",
-            'tipo.max' => "O tamanho máximo do campo é de :max caracteres"
+            'tipo.required' => 'O campo tipo é obrigatório',
+            'tipo.max' => 'O tamanho máximo do campo é de :max caracteres',
         ];
     }
 }

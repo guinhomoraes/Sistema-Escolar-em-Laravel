@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Disciplina;
-use Illuminate\Http\Request;
 use App\Http\Requests\DisciplinaRequest;
-use App\Models\TipoConteudo;
-use Illuminate\Support\Facades\DB;
 use App\Models\Conteudo;
+use App\Models\Disciplina;
+use App\Models\TipoConteudo;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class DisciplinaController extends Controller
 {
@@ -18,12 +18,12 @@ class DisciplinaController extends Controller
     {
         $nome = $request->query('nome');
         $descricao = $request->query('descricao');
-        $status = strlen($request->query('status')) > 0 ? [$request->query('status')] : [0,1];
+        $status = strlen($request->query('status')) > 0 ? [$request->query('status')] : [0, 1];
 
-        $disciplinas = Disciplina::where('nome','LIKE','%'.$nome.'%')
-                              ->where('descricao','LIKE','%'.$descricao.'%')
-                              ->whereIn('status',$status)
-                              ->paginate(6);
+        $disciplinas = Disciplina::where('nome', 'LIKE', '%'.$nome.'%')
+            ->where('descricao', 'LIKE', '%'.$descricao.'%')
+            ->whereIn('status', $status)
+            ->paginate(6);
 
         return view('disciplina.index', compact('disciplinas'));
     }
@@ -46,18 +46,15 @@ class DisciplinaController extends Controller
             'descricao' => $request['descricao'],
             'status' => $request['status'],
             'observacao' => $request['observacao'],
-            'dt_cadastro' => date('Y-m-d')
+            'dt_cadastro' => date('Y-m-d'),
         ]);
 
-        if($disciplina)
-        {
+        if ($disciplina) {
             return redirect()->route('disciplina.index')
-                             ->with('success','Disciplina cadastrada com sucesso!!');   
-        }
-        else
-        {
+                ->with('success', 'Disciplina cadastrada com sucesso!!');
+        } else {
             return redirect()->route('disciplina.index')
-                             ->with('error','Não foi possível cadastrar a Disciplina!!');   
+                ->with('error', 'Não foi possível cadastrar a Disciplina!!');
         }
     }
 
@@ -89,19 +86,16 @@ class DisciplinaController extends Controller
             'observacao' => $request['observacao'],
         ]);
 
-        if($disciplina)
-        {
+        if ($disciplina) {
             return redirect()->route('disciplina.index')
-                             ->with('success','Disciplina atualizada com sucesso!!');   
-        }
-        else
-        {
+                ->with('success', 'Disciplina atualizada com sucesso!!');
+        } else {
             return redirect()->route('disciplina.index')
-                             ->with('error','Não foi possível atualizar a Disciplina!!');   
+                ->with('error', 'Não foi possível atualizar a Disciplina!!');
         }
     }
 
-     /**
+    /**
      * Add content
      */
     public function conteudos(Disciplina $id)
@@ -109,11 +103,10 @@ class DisciplinaController extends Controller
         $modelDisciplina = $id;
         $tipoConteudo = TipoConteudo::get();
 
-
-        return view('disciplina.conteudos', compact('modelDisciplina','tipoConteudo'));
+        return view('disciplina.conteudos', compact('modelDisciplina', 'tipoConteudo'));
     }
 
-     /**
+    /**
      * Add content
      */
     public function addConteudos(Request $request)
@@ -122,11 +115,10 @@ class DisciplinaController extends Controller
         $dadosTituloRequest = $request->titulo;
         $arrDadosConteudos = [];
 
-        $idDisciplina  = $request->id_disciplina;
+        $idDisciplina = $request->id_disciplina;
 
-        foreach($dadosTituloRequest as $key => $tituloRequest)
-        {
-            $arrDadosConteudos[] = 
+        foreach ($dadosTituloRequest as $key => $tituloRequest) {
+            $arrDadosConteudos[] =
             [
                 'id' => $request->id[$key],
                 'tipo_conteudo' => $request->tipo_conteudo[$key],
@@ -134,62 +126,51 @@ class DisciplinaController extends Controller
                 'descricao' => $request->descricao[$key],
                 'status' => $request->status[$key],
                 'observacao' => $request->observacao[$key],
-                'foi_excluido' => isset($request->foi_excluido[$key]) 
-                                  ? $request->foi_excluido[$key] : 0 
+                'foi_excluido' => isset($request->foi_excluido[$key])
+                                  ? $request->foi_excluido[$key] : 0,
             ];
         }
 
         DB::beginTRansaction();
 
-        try
-        {
+        try {
 
-            foreach($arrDadosConteudos as $key2 => $dadosRequest)
-            {
+            foreach ($arrDadosConteudos as $key2 => $dadosRequest) {
 
-                if(strlen($dadosRequest['id']) > 0)
-                {
+                if (strlen($dadosRequest['id']) > 0) {
                     $modelConteudo = Conteudo::find($dadosRequest['id']);
 
-                    if($modelConteudo)
-                    {
-                        if($dadosRequest['foi_excluido'] == 0)
-                        {
+                    if ($modelConteudo) {
+                        if ($dadosRequest['foi_excluido'] == 0) {
                             $modelConteudo->update([
                                 'id_tipo' => $dadosRequest['tipo_conteudo'],
                                 'titulo' => $dadosRequest['titulo'],
                                 'status' => $dadosRequest['status'],
                                 'descricao' => $dadosRequest['descricao'],
                                 'observacao' => $dadosRequest['observacao'],
-                                'id_disciplina' => $idDisciplina
+                                'id_disciplina' => $idDisciplina,
                             ]);
-                        }
-                        else
-                        {
+                        } else {
                             $modelConteudo->delete();
-                        }   
+                        }
                     }
-                }
-                else
-                {
-                    if(strlen($dadosRequest['titulo']) > 0)
-                    {
+                } else {
+                    if (strlen($dadosRequest['titulo']) > 0) {
                         $salvou = Conteudo::create([
                             'id_tipo' => $dadosRequest['tipo_conteudo'],
                             'titulo' => $dadosRequest['titulo'],
                             'status' => $dadosRequest['status'],
                             'descricao' => $dadosRequest['descricao'],
                             'observacao' => $dadosRequest['observacao'],
-                            'id_disciplina' => $idDisciplina
+                            'id_disciplina' => $idDisciplina,
                         ]
                         );
 
-                        if(!$salvou)
-                        {
+                        if (! $salvou) {
                             DB::rollBack();
 
                             return redirect()->route('disciplina.index')
-                             ->with('error','Não foi possível atualizar os conteúdos!!'); 
+                                ->with('error', 'Não foi possível atualizar os conteúdos!!');
                         }
                     }
                 }
@@ -198,16 +179,14 @@ class DisciplinaController extends Controller
             DB::commit();
 
             return redirect()->route('disciplina.index')
-                             ->with('success','Conteúdos atualizados com sucesso!!'); 
+                ->with('success', 'Conteúdos atualizados com sucesso!!');
 
-        }catch(Exception $e)
-        {
+        } catch (Exception $e) {
             DB::rollBack();
 
             return redirect()->route('disciplina.index')
-                             ->with('error', $e->getMessage()); 
+                ->with('error', $e->getMessage());
         }
-
 
         return view('disciplina.conteudos');
     }

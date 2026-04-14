@@ -16,18 +16,18 @@ class ProfessorRequest extends FormRequest
             'id_escola' => 'required',
             'registro' => 'required',
             'salario' => 'required',
-            'status' => 'required'
+            'status' => 'required',
         ];
     }
 
-    public function messages() : array
+    public function messages(): array
     {
         return [
-            'id_usuario.required' => "O campo Usuário é obrigatório",
-            'id_escola.required' => "O campo Escola é obrigatório",
-            'registro.required' => "O campo Registro é obrigatório",
-            'salario.required' => "O campo Salario é obrigatório",
-            'status.required' => "O campo Status é obrigatório"
+            'id_usuario.required' => 'O campo Usuário é obrigatório',
+            'id_escola.required' => 'O campo Escola é obrigatório',
+            'registro.required' => 'O campo Registro é obrigatório',
+            'salario.required' => 'O campo Salario é obrigatório',
+            'status.required' => 'O campo Status é obrigatório',
         ];
     }
 }

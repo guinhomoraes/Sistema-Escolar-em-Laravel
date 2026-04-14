@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\EscolaRequest;
 use App\Models\Escola;
 use Illuminate\Http\Request;
-use App\Http\Requests\EscolaRequest;
 
 class EscolaController extends Controller
 {
@@ -13,20 +13,19 @@ class EscolaController extends Controller
      */
     public function index(Request $request)
     {
-        $codigo_escola = !empty($request->query("codigo_escola")) ? $request->query('codigo_escola') : '';
-        $nome_fantasia = !empty($request->query("nome_fantasia")) ? $request->query('nome_fantasia') : '';
-        $razao_social = !empty($request->query("razao_social")) ? $request->query('razao_social') : '';
-        $status = strlen($request->query("status")) > 0 ? [$request->query("status")] : [0,1];
+        $codigo_escola = ! empty($request->query('codigo_escola')) ? $request->query('codigo_escola') : '';
+        $nome_fantasia = ! empty($request->query('nome_fantasia')) ? $request->query('nome_fantasia') : '';
+        $razao_social = ! empty($request->query('razao_social')) ? $request->query('razao_social') : '';
+        $status = strlen($request->query('status')) > 0 ? [$request->query('status')] : [0, 1];
 
-        $escolas = Escola::where('codigo_escola','LIKE','%'.$codigo_escola.'%')
-                         ->where('nome_fantasia','LIKE','%'.$nome_fantasia.'%')
-                         ->where('razao_social','LIKE','%'.$razao_social.'%')
-                         ->whereIn('status', $status)
-                         ->paginate(5);
+        $escolas = Escola::where('codigo_escola', 'LIKE', '%'.$codigo_escola.'%')
+            ->where('nome_fantasia', 'LIKE', '%'.$nome_fantasia.'%')
+            ->where('razao_social', 'LIKE', '%'.$razao_social.'%')
+            ->whereIn('status', $status)
+            ->paginate(5);
 
-
-        return view('escola.index',[
-            'escolas' => $escolas
+        return view('escola.index', [
+            'escolas' => $escolas,
         ]);
     }
 
@@ -46,16 +45,12 @@ class EscolaController extends Controller
 
         $escola = Escola::create($request->all());
 
-
-        if($escola)
-        {
+        if ($escola) {
             return redirect()->route('escola.index')
-                             ->with('success','Escola cadastrada com sucesso!!');   
-        }
-        else
-        {
+                ->with('success', 'Escola cadastrada com sucesso!!');
+        } else {
             return redirect()->route('escola.index')
-                             ->with('error','Não foi possível cadastrar a Escola!!');   
+                ->with('error', 'Não foi possível cadastrar a Escola!!');
         }
     }
 
@@ -65,7 +60,8 @@ class EscolaController extends Controller
     public function show(Escola $escola)
     {
         $modelEscola = $escola;
-        return view('escola.view',compact('modelEscola'));
+
+        return view('escola.view', compact('modelEscola'));
     }
 
     /**
@@ -74,7 +70,8 @@ class EscolaController extends Controller
     public function edit(Escola $escola)
     {
         $modelEscola = $escola;
-        return view('escola.update',compact('modelEscola'));
+
+        return view('escola.update', compact('modelEscola'));
     }
 
     /**
@@ -84,15 +81,12 @@ class EscolaController extends Controller
     {
         $escola = $escola->update($request->all());
 
-        if($escola)
-        {
+        if ($escola) {
             return redirect()->route('escola.index')
-                             ->with('success','Escola atualizada com sucesso!!');   
-        }
-        else
-        {
+                ->with('success', 'Escola atualizada com sucesso!!');
+        } else {
             return redirect()->route('escola.index')
-                             ->with('error','Não foi possível atualizar a Escola!!');   
+                ->with('error', 'Não foi possível atualizar a Escola!!');
         }
     }
 

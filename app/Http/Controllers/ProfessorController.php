@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Professor;
+use App\Http\Requests\ProfessorRequest;
 use App\Models\Escola;
+use App\Models\Professor;
+use App\Models\Search\ProfessorSeach;
 use App\Models\User;
 use Illuminate\Http\Request;
-use App\Http\Requests\ProfessorRequest;
-use App\Models\Search\ProfessorSeach;
 
 class ProfessorController extends Controller
 {
@@ -16,17 +16,17 @@ class ProfessorController extends Controller
      */
     public function index(Request $request)
     {
-        
+
         $escolas = Escola::get();
         $usuarios = User::get();
 
-        $modelSearchProfessor = new ProfessorSeach();
+        $modelSearchProfessor = new ProfessorSeach;
         $professores = $modelSearchProfessor->search($request);
 
-        return view('professor.index',[
+        return view('professor.index', [
             'professores' => $professores,
             'escolas' => $escolas,
-            'usuarios' => $usuarios
+            'usuarios' => $usuarios,
         ]);
     }
 
@@ -38,9 +38,9 @@ class ProfessorController extends Controller
         $escolas = Escola::get();
         $usuarios = User::get();
 
-        return view('professor.create',[
+        return view('professor.create', [
             'escolas' => $escolas,
-            'usuarios' => $usuarios
+            'usuarios' => $usuarios,
         ]);
     }
 
@@ -58,18 +58,15 @@ class ProfessorController extends Controller
             'observacao' => $request['observacao'],
             'status' => $request['status'],
             'telefone' => $request['telefone'],
-            'data_cadastro' => date('Y-m-d')
+            'data_cadastro' => date('Y-m-d'),
         ]);
 
-        if($professor)
-        {
+        if ($professor) {
             return redirect()->route('professor.index')
-                             ->with('success','Professor cadastrado com sucesso!!');   
-        }
-        else
-        {
+                ->with('success', 'Professor cadastrado com sucesso!!');
+        } else {
             return redirect()->route('professor.index')
-                             ->with('error','Não foi possível cadastrar o Professor!!');   
+                ->with('error', 'Não foi possível cadastrar o Professor!!');
         }
     }
 
@@ -80,8 +77,8 @@ class ProfessorController extends Controller
     {
         $modelProfessor = $professor;
 
-        return view('professor.view',[
-            'modelProfessor' => $modelProfessor
+        return view('professor.view', [
+            'modelProfessor' => $modelProfessor,
         ]);
     }
 
@@ -95,10 +92,10 @@ class ProfessorController extends Controller
         $escolas = Escola::get();
         $usuarios = User::get();
 
-        return view('professor.update',[
+        return view('professor.update', [
             'modelProfessor' => $modelProfessor,
             'escolas' => $escolas,
-            'usuarios' => $usuarios
+            'usuarios' => $usuarios,
         ]);
     }
 
@@ -115,18 +112,15 @@ class ProfessorController extends Controller
             'salario' => $request['salario'],
             'observacao' => $request['observacao'],
             'status' => $request['status'],
-            'telefone' => $request['telefone']
+            'telefone' => $request['telefone'],
         ]);
 
-        if($professor)
-        {
+        if ($professor) {
             return redirect()->route('professor.index')
-                             ->with('success','Professor atualizado com sucesso!!');   
-        }
-        else
-        {
+                ->with('success', 'Professor atualizado com sucesso!!');
+        } else {
             return redirect()->route('professor.index')
-                             ->with('error','Não foi possível atualizar o Professor!!');   
+                ->with('error', 'Não foi possível atualizar o Professor!!');
         }
     }
 
