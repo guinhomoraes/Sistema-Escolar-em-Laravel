@@ -32,10 +32,10 @@ class TurmaController extends Controller
         $professores = Professor::get();
 
         $turmas = Turma::query()
-            ->when(! empty($id_professor), function ($query, $id_professor) {
+            ->when($id_professor, function ($query, $id_professor) {
                 return $query->where('id_professor', $id_professor);
             })
-            ->when(! empty($id_escola), function ($query, $id_escola) {
+            ->when($id_escola, function ($query, $id_escola) {
                 return $query->where('id_escola', $id_escola);
             })
             ->where('nome', 'LIKE', '%'.$codigo.'%')
